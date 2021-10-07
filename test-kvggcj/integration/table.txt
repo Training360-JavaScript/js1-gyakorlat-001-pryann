@@ -1,0 +1,55 @@
+export function checkIfEleExists(ele) {
+    return new Promise((resolve, reject) => {
+        cy.get("body").then($body => {
+            const elements = $body.find(ele);
+            if (elements.length > 0) {   //evaluates as true
+                resolve(elements);
+            } else {
+                reject();
+            }
+        });
+    })
+}
+
+describe('Ellenőrzések', () => {
+    it('Táblázat létezik?', () => {
+        cy.visit('');
+        cy.get("body table").then($table => {
+            expect($table.length).equal(1);
+        });
+    });
+    
+    it('Táblázat fejléce létezik?', () => {
+        cy.visit('');
+        cy.get("body table thead").then($table => {
+            expect($table.length).equal(1);
+        });
+    });
+    
+    it('Táblázat fejlécének a cellái helyesen létre lettek hozva?', () => {
+        cy.visit('');
+        cy.get("body").then($body => {
+            const elements = $body.find('table thead tr th');
+            expect(elements.length).to.equal(5);
+        });
+    });
+    
+    it('Táblázat fejléceinek a tartalma helyes?', () => {
+        cy.visit('');
+        cy.get("body table thead tr").then($tr => {
+            expect($tr.find('th:nth-child(1)').text()).to.match(/id/);
+            expect($tr.find('th:nth-child(2)').text()).to.match(/name/);
+            expect($tr.find('th:nth-child(3)').text()).to.match(/age/);
+            expect($tr.find('th:nth-child(4)').text()).to.match(/email/);
+            expect($tr.find('th:nth-child(5)').text()).to.match(/active/);
+        });
+    });
+    
+    it('Táblázat tartalma három sor és öt oszlop?', () => {
+        cy.visit('');
+        cy.get("body table tbody").then($tr => {
+            expect($tr.find('tr').length).equal(3);
+            expect($tr.find('tr:nth-child(1) td').length).equal(5);
+        });
+    });
+})
